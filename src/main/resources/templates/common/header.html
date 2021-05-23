@@ -1,6 +1,8 @@
 <!doctype html>
-<html lang="ru" xmlns:th="http://www.w3.org./1999/xhtml"
-      xmlns:sec="http://www.w3.org./1999/xhtml">
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity4">
 <head th:fragment="common-header">
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
@@ -8,7 +10,7 @@
 
     <title>Автоматические ворота в Гродно, расчет стоимости ворот | Изготовление и монтаж</title>
 
-    <link rel="icon" href="/image/icon-logo.png">
+    <link rel="icon" href="@{/image/icon-logo.png}">
     <!-- Fonts -->
     <link href="https://fonts.googleapis.com/css?family=Nunito|Roboto|Roboto+Condensed|Roboto+Slab" rel="stylesheet">
     <!-- Bootstrap core CSS -->
@@ -26,15 +28,12 @@
     <link href="/css/style.css" rel="stylesheet">
     <!-- Feather icons -->
     <script src="https://unpkg.com/feather-icons"></script>
-
 </head>
-
 
 <body>
 <div th:fragment="navbar">
     <nav class="navbar navbar-expand-md navbar-light bg-light fixed-top shadow-sm">
-        <a class="navbar-brand" th:href="@{/}">
-            <img width="150" height="30" src="/image/logo.png"></a>
+
         <button class="navbar-toggler" type="button" data-toggle="collapse"
                 data-target="#navbarCollapse" aria-controls="navbarCollapse"
                 aria-expanded="false" aria-label="Toggle navigation">
@@ -49,7 +48,6 @@
                     <a class="nav-link" th:href="@{/store}"> Товары и услуги </a>
                 </li>
 
-
             </ul>
             <ul class="navbar-nav ml-auto font-weight-bold">
                 <li class="nav-item">
@@ -63,13 +61,11 @@
                 </li>
                 <li class="nav-item">
                     <a class="nav-link text-dark" sec:authorize="hasAuthority('ADMIN')" th:href="@{/product/product-list}">
-                    <!--<a class="nav-link text-dark" principle.role=Role.ADMIN th:href="@{/product/product-list}">-->
                         Страничка администратора</a>
                 </li>
             </ul>
         </div>
     </nav>
-
 
 </div>
 
