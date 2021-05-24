@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<html lang="en" xmlns:th="http://www.w3.org./1999/xhtml">
 <head th:replace="common/header :: common-header" />
 
 
@@ -23,21 +23,14 @@
                   <div class="form-group">
                     <div class="input-icon"> 
                       <i data-feather="user"></i> 
-                      <input required="required" type="text"
-                             class="form-control"
-                             placeholder="Login or e-mail"
-                             name="username"
+                      <input required="required" type="text" class="form-control" placeholder="Username" name="username" 
                              th:classappend="${param.error} ? is-invalid" >
                     </div>
                   </div>
                   <div class="form-group">
                     <div class="input-icon"> 
                       <i data-feather="lock"></i> 
-                      <input required="required"
-                             type="password"
-                             class="form-control"
-                             placeholder="Password"
-                             name="password"
+                      <input required="required" type="password" class="form-control" placeholder="Password" name="password"
                              th:classappend="${param.error} ? is-invalid" >
                       <div class="invalid-feedback">Incorrect username or password</div>  
                     </div>                    
@@ -45,9 +38,7 @@
                   <div class="form-group d-flex justify-content-between">
                     <div class="custom-control custom-checkbox">
                       <input type="checkbox"
-                        class="custom-control-input"
-                             id="loginRemember"
-                             name="remember-me">
+                        class="custom-control-input" id="loginRemember" name="remember-me">
                       <label class="custom-control-label"
                         for="loginRemember">Remember me</label>
                     </div>
@@ -71,32 +62,23 @@
                   <div class="form-group">                
                     <div class="input-icon"> 
                       <i data-feather="mail"></i> 
-                      <input required="required"
-                             type="email"
-                             class="form-control"
-                             th:classappend="${emailExists} ? is-invalid"
-                             name="email"
-                             placeholder="Email address"
-                             th:value="${email}">
+                      <input required="required" type="email" class="form-control" th:classappend="${emailExists} ? is-invalid" 
+                             name="email" placeholder="Email address" th:value="${email}">
                       <div class="invalid-feedback">Email is already in use</div>                 
                     </div>
                   </div>
                   <div class="form-group">
                     <div class="input-icon"> 
                       <i data-feather="user"></i> 
-                      <input required="required"
-                             type="text"
-                             class="form-control"
-                             th:classappend="${loginExists} ? is-invalid"
-                             placeholder="Login" name="login" th:value="${login}">
-                      <div class="invalid-feedback">Login is already in use</div>
+                      <input required="required" type="text" class="form-control" th:classappend="${usernameExists} ? is-invalid"
+                             placeholder="Username" name="username" th:value="${username}">
+                      <div class="invalid-feedback">Username is already in use</div>                 
                       
                     </div>
                   </div>
                   <div class="form-group">
                     <div class="input-icon"> 
-                      <i data-feather="lock"></i>
-                      <input type="password" required="required"
+                      <i data-feather="lock"></i> <input type="password" required="required"
                         class="form-control" name="new-password"
                         placeholder="Password" autocomplete="new-password">
                     </div>

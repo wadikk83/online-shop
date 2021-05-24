@@ -1,15 +1,10 @@
 package by.wadikk.onlineshop.config;
 
-import by.wadikk.onlineshop.service.impl.UserSecurityService;
-import by.wadikk.onlineshop.utility.SecurityUtility;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
 @Configuration
@@ -17,12 +12,7 @@ import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 @EnableGlobalMethodSecurity(prePostEnabled = true)
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
-    @Autowired
-    private UserSecurityService userSecurityService;
 
-    private BCryptPasswordEncoder passwordEncoder() {
-        return SecurityUtility.passwordEncoder();
-    }
 
     private static final String[] PUBLIC_MATCHERS = {
             "/css/**",
@@ -55,8 +45,4 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .rememberMe().key("aSecretKey");
     }
 
-    @Autowired
-    public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
-        auth.userDetailsService(userSecurityService).passwordEncoder(passwordEncoder());
-    }
 }

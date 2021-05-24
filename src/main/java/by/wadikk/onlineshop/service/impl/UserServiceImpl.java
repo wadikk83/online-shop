@@ -1,15 +1,16 @@
 package by.wadikk.onlineshop.service.impl;
 
+import java.util.Optional;
+
 import by.wadikk.onlineshop.entity.Role;
 import by.wadikk.onlineshop.entity.User;
 import by.wadikk.onlineshop.repository.UserRepository;
 import by.wadikk.onlineshop.service.UserService;
+import by.wadikk.onlineshop.utility.SecurityUtility;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
-import java.util.*;
 
 @Service
 public class UserServiceImpl implements UserService {
@@ -17,20 +18,18 @@ public class UserServiceImpl implements UserService {
     @Autowired
     private UserRepository userRepository;
 
-    @Autowired
-    private PasswordEncoder passwordEncoder;
-
 
     @Override
     public User findById(Long id) {
-        Optional<User> optionalUser = userRepository.findById(id);
-        return optionalUser.get();
+        Optional<User> opt = userRepository.findById(id);
+        return opt.get();
     }
 
     @Override
-    public User findByLogin(String login) {
-        return userRepository.findByLogin(login);
+    public User findByUsername(String username) {
+        return userRepository.findByUsername(username);
     }
+
 
     @Override
     public User findByEmail(String email) {
@@ -38,29 +37,21 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public boolean save(User user) {
-        /*User userFromDB = userRepository.findByLogin(user.getLogin());
-        if (userFromDB != null) return false;
-        user.setRole(Role.USER);
-        BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
-        user.setPassword(encoder.encode(user.getPassword()));
-        userRepository.save(user);*/
+    public void save(User user) {
         userRepository.save(user);
-        return true;
     }
 
     @Override
-    public User createUser(String login, String password, String email, Role role) {
-        User user = findByLogin(login);
+    @Transactional
+    public User createUser(String username, String email, String password, Role role) {
+        User user = findByUsername(username);
         if (user != null) {
             return user;
         } else {
             user = new User();
-            user.setLogin(login);
-            BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
-            user.setPassword(encoder.encode(password));
+            user.setUsername(username);
+            user.setPassword(SecurityUtility.passwordEncoder().encode(password));
             user.setEmail(email);
-            //user.setRoles(Collections.singleton(Role.USER));
             user.setRole(Role.USER);
             return userRepository.save(user);
         }

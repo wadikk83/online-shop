@@ -14,6 +14,6 @@ public class OnlineShopStartupRunner implements CommandLineRunner {
 
     @Override
     public void run(String... args) throws Exception {
-        userService.createUser("admin", "admin", "1111@tut.by", Role.ADMIN);
+        userService.createUser("admin", "admin@tut.by", "admin", Role.ADMIN);
     }
 }
