@@ -27,6 +27,7 @@ public class User implements UserDetails {
     @Email
     private String email;
 
+    @Enumerated
     private Role role;
 
     @Override

@@ -1,21 +1,27 @@
 package by.wadikk.onlineshop.controller;
 
 import java.security.Principal;
-import javax.validation.Valid;
+import java.util.List;
 
+import by.wadikk.onlineshop.entity.Order;
 import by.wadikk.onlineshop.entity.Role;
 import by.wadikk.onlineshop.entity.User;
+import by.wadikk.onlineshop.service.OrderService;
 import by.wadikk.onlineshop.service.UserService;
 import by.wadikk.onlineshop.service.impl.UserSecurityService;
 import by.wadikk.onlineshop.utility.SecurityUtility;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.ui.ModelMap;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+
+import javax.validation.Valid;
 
 
 @Controller
@@ -25,14 +31,30 @@ public class AccountController {
     private UserService userService;
 
     @Autowired
+    private OrderService orderService;
+
+    @Autowired
     private UserSecurityService userSecurityService;
 
+    @PostMapping
+    public String loginPost(ModelMap model) {
 
-    @RequestMapping("/login")
-    public String log(Model model) {
+        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        if (principal instanceof org.springframework.security.core.userdetails.User) {
+            model.addAttribute("login", ((org.springframework.security.core.userdetails.User) principal).getUsername());
+        } else {
+            return "redirect:/login";
+        }
+        return "redirect:/index";
+    }
+
+
+    @GetMapping("/login")
+    public String loginGet(Model model) {
         model.addAttribute("usernameExists", model.asMap().get("usernameExists"));
         model.addAttribute("emailExists", model.asMap().get("emailExists"));
-        return "myAccount";
+
+        return "login";
     }
 
     @RequestMapping("/my-profile")
@@ -42,11 +64,13 @@ public class AccountController {
         return "myProfile";
     }
 
-    @RequestMapping("/my-orders")
+    @GetMapping("/my-orders")
     public String myOrders(Model model, Authentication authentication) {
         User user = (User) authentication.getPrincipal();
-
-        return "myOrders";
+        model.addAttribute("user", user);
+        List<Order> orders = orderService.findByUser(user);
+        model.addAttribute("orders", orders);
+        return "orders";
     }
 
     @PostMapping("/new-user")
@@ -70,7 +94,6 @@ public class AccountController {
         if (invalidFields) {
             return "redirect:/login";
         }
-        //user = userService.createUser(user.getUsername(), password, user.getEmail(), Role.USER);
         user = userService.createUser(user.getUsername(), user.getEmail(), password, Role.USER);
         userSecurityService.authenticateUser(user.getUsername());
         return "redirect:/my-profile";
@@ -84,14 +107,9 @@ public class AccountController {
         if (currentUser == null) {
             throw new Exception("User not found");
         }
-        /*check username already exists*/
-        User existingUser = userService.findByUsername(user.getUsername());
-        if (existingUser != null && !existingUser.getId().equals(currentUser.getId())) {
-            model.addAttribute("usernameExists", true);
-            return "myProfile";
-        }
-        /*check email already exists*/
-        existingUser = userService.findByEmail(user.getEmail());
+
+        //*check email already exists
+        User existingUser = userService.findByEmail(user.getEmail());
         if (existingUser != null && !existingUser.getId().equals(currentUser.getId())) {
             model.addAttribute("emailExists", true);
             return "myProfile";
@@ -117,6 +135,4 @@ public class AccountController {
         userSecurityService.authenticateUser(currentUser.getUsername());
         return "myProfile";
     }
-
-
 }
