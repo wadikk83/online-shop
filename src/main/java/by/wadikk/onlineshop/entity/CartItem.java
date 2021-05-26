@@ -15,7 +15,7 @@ public class CartItem {
 
     @OneToOne
     @JoinColumn(name = "article_id")
-    private Article article;
+    private Product product;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
