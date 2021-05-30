@@ -3,6 +3,7 @@ package by.wadikk.onlineshop.entity;
 import lombok.Data;
 
 import javax.persistence.*;
+import java.math.BigDecimal;
 
 @Entity
 @Data
@@ -28,5 +29,12 @@ public class CartItem {
 
     public void addQuantity(int quantity) {
         this.quantity = this.quantity + quantity;
+    }
+
+
+    //https://metanit.com/java/tutorial/12.2.php
+    public BigDecimal getSubtotal() {
+        return new BigDecimal(product.getPrice()).multiply(new BigDecimal(quantity));
+
     }
 }

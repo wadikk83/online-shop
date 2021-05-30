@@ -33,15 +33,13 @@
                   <thead class="thead-light">
                     <tr>
                       <th scope="col">Order ID</th>
-                      <th scope="col">Date</th>
                       <th scope="col" class="text-right">Total</th>
                       <th scope="col" class="text-center">Status</th>
                     </tr>
                   </thead>
                   <tbody>
                     <tr th:each="order : ${orders}">
-                      <th scope="row" ><a th:href="@{/order-detail?order=}+${order.id}" class="text-primary">ORD<span th:text="${order.id}"></span></a></th>                      
-                      <td th:text="${#dates.format(order.orderDate, 'dd-MMM-yyyy')}"></td>
+                      <th scope="row" ><a th:href="@{/order/order-detail?id=}+${order.id}" class="text-primary">ORD<span th:text="${order.id}"></span></a></th>
                       <td class="text-right">$<span th:text="${order.orderTotal}"></span></td>
                       <td class="text-center"><span class="badge badge-info rounded" th:text="${order.orderStatus}"></span></td>
                     </tr>                    

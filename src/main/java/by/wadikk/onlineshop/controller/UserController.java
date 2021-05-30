@@ -114,9 +114,9 @@ public class UserController {
         return "redirect:product-list";
     }*/
 
-    /*@GetMapping("/delete")
-    public String deleteProductById(@RequestParam("id") Long id) {
-        productService.deleteProductById(id);
-        return "redirect:product-list";
-    }*/
+    @GetMapping("/delete")
+    public String deleteUserById(@RequestParam("id") Long id) {
+        userService.deleteUserById(id);
+        return "redirect:user-list";
+    }
 }

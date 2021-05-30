@@ -19,4 +19,6 @@ public interface UserService {
     User createUser(String username, String email, String password, Role role);
 
     List<User> findAllUsers();
+
+    void deleteUserById(Long id);
 }

@@ -9,7 +9,7 @@
 <div th:replace="adminHome :: navbarAdmin"></div>
 
 <div class="container page-content">
-    <table id="table-article" class="table table-striped table-bordered table-hover">
+    <table id="table-user" class="table table-striped table-bordered table-hover">
         <thead class="thead-dark">
         <tr>
             <th>Username</th>
@@ -53,7 +53,7 @@
 
 <script>
     $(document).ready(function () {
-        $('#table-article').DataTable({
+        $('#table-user').DataTable({
             stateSave: true
         });
     });

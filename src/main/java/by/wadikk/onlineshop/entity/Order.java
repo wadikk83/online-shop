@@ -3,6 +3,7 @@ package by.wadikk.onlineshop.entity;
 import lombok.Data;
 
 import javax.persistence.*;
+import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
 
@@ -14,7 +15,7 @@ public class Order {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
-    private Date orderDate;
+    private BigDecimal orderTotal;
 
     @Enumerated
     private OrderStatus orderStatus;

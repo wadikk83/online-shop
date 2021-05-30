@@ -9,6 +9,8 @@ import by.wadikk.onlineshop.service.ShoppingCartService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Optional;
+
 @Service
 public class ShoppingCartServiceImpl implements ShoppingCartService {
 
@@ -36,6 +38,25 @@ public class ShoppingCartServiceImpl implements ShoppingCartService {
             cartItem = cartItemRepository.save(cartItem);
         }
         return cartItem;
+    }
+
+    @Override
+    public CartItem findCartItemById(Long id) {
+        Optional<CartItem> optional = cartItemRepository.findById(id);
+        return optional.get();
+    }
+
+    @Override
+    public void removeCartItem(CartItem cartItem) {
+        cartItemRepository.deleteById(cartItem.getId());
+    }
+
+    @Override
+    public void updateCartItem(CartItem cartItem, Integer quantity) {
+        if (cartItem.getProduct().hasStock(quantity)) {
+            cartItem.setQuantity(quantity);
+            cartItemRepository.save(cartItem);
+        }
     }
 
 }

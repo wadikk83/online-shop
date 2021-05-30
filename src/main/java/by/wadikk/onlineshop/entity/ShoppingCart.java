@@ -1,6 +1,7 @@
 package by.wadikk.onlineshop.entity;
 
 
+import java.math.BigDecimal;
 import java.util.List;
 
 
@@ -20,5 +21,21 @@ public class ShoppingCart {
             }
         }
         return null;
+    }
+
+    public List<CartItem> getCartItems() {
+        return cartItems;
+    }
+
+    public BigDecimal getTotal() {
+        BigDecimal cartTotal = new BigDecimal(0);
+        for (CartItem item : this.cartItems) {
+            cartTotal = cartTotal.add(item.getSubtotal());
+        }
+        return cartTotal;
+    }
+
+    public boolean isEmpty() {
+        return cartItems.isEmpty();
     }
 }

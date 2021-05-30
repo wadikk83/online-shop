@@ -1,7 +1,9 @@
 package by.wadikk.onlineshop.controller;
 
 
+import by.wadikk.onlineshop.entity.CartItem;
 import by.wadikk.onlineshop.entity.Product;
+import by.wadikk.onlineshop.entity.ShoppingCart;
 import by.wadikk.onlineshop.entity.User;
 import by.wadikk.onlineshop.service.ProductService;
 import by.wadikk.onlineshop.service.ShoppingCartService;
@@ -26,43 +28,41 @@ public class ShoppingCartController {
     @Autowired
     private ShoppingCartService shoppingCartService;
 
-    /*@RequestMapping("/cart")
+    @RequestMapping("/cart")
     public String shoppingCart(Model model, Authentication authentication) {
         User user = (User) authentication.getPrincipal();
         ShoppingCart shoppingCart = shoppingCartService.getShoppingCart(user);
         model.addAttribute("cartItemList", shoppingCart.getCartItems());
         model.addAttribute("shoppingCart", shoppingCart);
         return "shoppingCart";
-    }*/
+    }
 
-    @PostMapping("/add-item")
+    @RequestMapping("/add-item")
     public String addItem(@ModelAttribute("product") Product product, @RequestParam("quantity") String quantity,
                           RedirectAttributes attributes, Authentication authentication) {
 
         product = productService.findProductById(product.getId());
-        if (product.getStock() >= (Integer.parseInt(quantity))) {
+        if (product.getStock() < (Integer.parseInt(quantity))) {
             attributes.addFlashAttribute("notEnoughStock", true);
-            return "redirect:/article-detail?id=" + product.getId();
+            return "redirect:/product-detail?id=" + product.getId();
         }
         User user = (User) authentication.getPrincipal();
         shoppingCartService.addProductToShoppingCart(product, user, Integer.parseInt(quantity));
-        attributes.addFlashAttribute("addArticleSuccess", true);
-        return "redirect:/article-detail?id=" + product.getId();
+        attributes.addFlashAttribute("addProductSuccess", true);
+        return "redirect:/product-detail?id=" + product.getId();
     }
 
-    /*@RequestMapping("/update-item")
+    @PostMapping("/update-item")
     public String updateItemQuantity(@RequestParam("id") Long cartItemId,
-                                     @RequestParam("qty") Integer qty, Model model) {
+                                     @RequestParam("quantity") Integer quantity, Model model) {
         CartItem cartItem = shoppingCartService.findCartItemById(cartItemId);
-        if (cartItem.canUpdateQty(qty)) {
-            shoppingCartService.updateCartItem(cartItem, qty);
-        }
+            shoppingCartService.updateCartItem(cartItem, quantity);
         return "redirect:/shopping-cart/cart";
-    }*/
+    }
 
-    /*@RequestMapping("/remove-item")
+    @RequestMapping("/remove-item")
     public String removeItem(@RequestParam("id") Long id) {
         shoppingCartService.removeCartItem(shoppingCartService.findCartItemById(id));
         return "redirect:/shopping-cart/cart";
-    }*/
+    }
 }

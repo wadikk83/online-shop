@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml"
+      xmlns:sec="http://www.w3.org./1999/xhtml">
+
+<head th:replace="common/header :: common-header"/>
+
+<body>
+
+<div th:replace="adminHome :: navbarAdmin"></div>
+
+<div class="container page-content">
+    <table id="table-order" class="table table-striped table-bordered table-hover">
+        <thead class="thead-dark">
+        <tr>
+            <th>Username</th>
+            <th>Order ID</th>
+            <th>Total</th>
+            <th>Status</th>
+            <th>Operation</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr data-th-each="order : ${orders}">
+            <td th:text="${order.user.getUsername}"></td>
+            <td th:text="${order.id}"></td>
+            <td th:text="${order.orderTotal}"></td>
+            <td th:text="${order.orderStatus}"></td>
+
+
+            <td><a th:href="@{/order/edit?id=}+${order.id}" class="badge badge-primary">EDIT</a>
+                <a th:href="@{/order/delete?id=}+${order.id}" class="badge badge-danger">DELETE </a>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+
+
+<div th:replace="common/header :: body-scripts"></div>
+
+<script>
+    $(document).ready(function () {
+        $('#table-order').DataTable({
+            stateSave: true
+        });
+    });
+</script>
+
+</body>
+</html>

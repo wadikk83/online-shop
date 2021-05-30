@@ -12,4 +12,9 @@ public interface ShoppingCartService {
 
     CartItem addProductToShoppingCart(Product product, User user, int quantity);
 
+    CartItem findCartItemById(Long id);
+
+    void removeCartItem(CartItem cartItem);
+
+    void updateCartItem(CartItem cartItem, Integer quantity);
 }

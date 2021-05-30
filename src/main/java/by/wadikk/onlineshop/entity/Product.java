@@ -24,4 +24,13 @@ public class Product {
     @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<Category> categories;
 
+    public boolean hasStock(Integer quantity) {
+        if (this.stock >= quantity) {
+            return true;
+        } else return false;
+    }
+
+    public void reduceStock(int quantity) {
+        this.stock -= quantity;
+    }
 }

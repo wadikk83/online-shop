@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml"
+      xmlns:sec="http://www.w3.org/1999/xhtml">
+
+<head th:replace="common/header :: common-header"/>
+<body>
+
+<div th:replace="adminHome :: navbarAdmin"></div>
+
+<div class="container page-content">
+    <form th:action="@{/order/edit}" method="post" enctype="multipart/form-data" modelAttribute="order">
+        <fieldset>
+            <legend class="center-block">
+                Edit Order Information
+            </legend>
+
+            <input hidden="hidden" name="id" th:value="${order.id}">
+
+            <div class="container page-content">
+                <div class="row">
+                    <div class="col-12 col-sm-6 col-lg-4 mb-2 text-center text-left-lg">
+                        <h5 class="font-weight-bold">Order details</h5>
+                        <div class="list-group list-group-flush list-group-no-border list-group-sm">
+                            <div><strong>Current status: </strong>
+
+                                <select name="currentStatus" id="orderStatus" th:name="orderStatus">
+                                    <option th:each="orderStatus : ${orderStatusList}"
+                                            th:value="${orderStatus}"
+                                            th:selected="(${orderStatus} == *{order.orderStatus})"
+                                            th:text="${orderStatus}">
+                                    </option>
+                                </select>
+                            </div>
+                        </div>
+                        <hr class="d-block d-sm-none">
+                    </div>
+                </div>
+
+                <hr>
+                <h5 class="font-weight-bold text-center">Purchased products</h5>
+                <div class="row">
+                    <div class="card-body">
+                        <div class="row align-items-center border-bottom py-2" th:each="cartItem : ${order.cartItems}">
+
+                            <div class="col-12 col-md-6 mb-2">
+                                <div class="row align-items-center">
+
+                                    <div class="col-4">
+                                        <a th:href="@{/product-detail?id=}+${cartItem.product.id}"><img
+                                                class="img-fluid" th:src="${cartItem.product.picture}"
+                                                alt="${cartItem.product.title}"></a>
+                                    </div>
+                                    <div class="col-8">
+                                        <a th:href="@{/product-detail?id=}+${cartItem.product.id}"
+                                           class="h6 bold d-inline-block" th:text=${cartItem.product.title}></a>
+                                        <br>
+                                        <small><b>Unit Price</b>: $<span
+                                                th:text="${#numbers.formatDecimal(cartItem.product.price, 0, 'COMMA', 2, 'POINT')}"></span></small>
+                                    </div>
+
+                                </div>
+                            </div>
+
+                            <div class="col-12 col-md-6 text-right">
+                                <span>x<span th:text="${cartItem.quantity}"></span> units: </span>
+                                <span class="font-weight-bold text-info">$ <span th:id="'price'+${cartItem.id}"
+                                                                                 th:text="${#numbers.formatDecimal(cartItem.subtotal, 0, 'COMMA', 2, 'POINT')}"></span></span>
+                            </div>
+
+
+                        </div>
+                        <div class="d-flex justify-content-center align-items-center mt-3">
+                            <div class="text-center">
+                                <small class="counter">TOTAL</small>
+                                <h3 class="font-weight-bold">$ <span
+                                        th:text="${#numbers.formatDecimal(order.orderTotal, 0, 'COMMA', 2, 'POINT')}"></span>
+                                </h3>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-group row">
+                <div class="offset-2 col-6">
+                    <button type="submit" class="btn btn-success">Update Order</button>
+                    <a class="btn btn-danger" th:href="@{/order/order-list}">Cancel</a>
+                </div>
+            </div>
+        </fieldset>
+    </form>
+</div>
+
+
+<div th:replace="common/header :: body-scripts"></div>
+<script src="/js/tagsinput-custom.js"></script>
+
+
+</body>
+</html>
