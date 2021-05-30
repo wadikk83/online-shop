@@ -26,4 +26,7 @@ public class CartItem {
     private Order order;
 
 
+    public void addQuantity(int quantity) {
+        this.quantity = this.quantity + quantity;
+    }
 }

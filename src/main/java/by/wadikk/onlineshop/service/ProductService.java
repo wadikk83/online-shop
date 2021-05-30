@@ -1,6 +1,8 @@
 package by.wadikk.onlineshop.service;
 
 import by.wadikk.onlineshop.entity.Product;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 import java.util.List;
 
@@ -8,8 +10,8 @@ public interface ProductService {
 
     List<Product> findAllProducts();
 
-
-    List<Product> findFirstProducts();
+    Page<Product> findProductByCriteria(Pageable pageable, Integer priceLow, Integer priceHigh,
+                                        List<String> categories, List<String> brands, String search);
 
     Product findProductById(Long id);
 

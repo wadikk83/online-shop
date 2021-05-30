@@ -1,5 +1,6 @@
 package by.wadikk.onlineshop.service.impl;
 
+import java.util.List;
 import java.util.Optional;
 
 import by.wadikk.onlineshop.entity.Role;
@@ -56,4 +57,10 @@ public class UserServiceImpl implements UserService {
             return userRepository.save(user);
         }
     }
+
+    @Override
+    public List<User> findAllUsers() {
+        return (List<User>) userRepository.findAll();
+    }
+
 }

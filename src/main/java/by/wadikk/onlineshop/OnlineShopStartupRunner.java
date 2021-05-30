@@ -1,6 +1,5 @@
 package by.wadikk.onlineshop;
 
-import by.wadikk.onlineshop.entity.Role;
 import by.wadikk.onlineshop.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
@@ -14,6 +13,8 @@ public class OnlineShopStartupRunner implements CommandLineRunner {
 
     @Override
     public void run(String... args) throws Exception {
-        userService.createUser("admin", "admin@tut.by", "admin", Role.ADMIN);
+        //userService.createUser("admin", "admin@tut.by", "admin", Role.ADMIN);
+
+
     }
 }

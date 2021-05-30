@@ -25,6 +25,8 @@ public class User implements UserDetails {
     private String password;
     private String firstName;
     private String lastName;
+    private boolean active=false;
+    private Boolean blackList = false;
     @NotNull
     @Email
     private String email;

@@ -14,7 +14,6 @@ import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
 
-
     private static final String[] PUBLIC_MATCHERS = {
             "/css/**",
             "/js/**",
@@ -44,6 +43,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .logoutSuccessUrl("/?logout").deleteCookies("remember-me").permitAll()
                 .and()
                 .rememberMe().key("aSecretKey");
+
     }
 
 }

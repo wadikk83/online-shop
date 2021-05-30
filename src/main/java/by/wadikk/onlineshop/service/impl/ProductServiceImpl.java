@@ -2,8 +2,11 @@ package by.wadikk.onlineshop.service.impl;
 
 import by.wadikk.onlineshop.entity.Product;
 import by.wadikk.onlineshop.repository.ProductRepository;
+import by.wadikk.onlineshop.repository.ProductSpecification;
 import by.wadikk.onlineshop.service.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -22,9 +25,14 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public List<Product> findFirstProducts() {
-        return null;
+    public Page<Product> findProductByCriteria(Pageable pageable, Integer priceLow, Integer priceHigh,
+                                               List<String> categories, List<String> brands, String search) {
+
+        Page<Product> page = productRepository.findAll(ProductSpecification.filterBy(
+                priceLow, priceHigh, categories, brands, search), pageable);
+        return page;
     }
+
 
     @Override
     public Product findProductById(Long id) {
@@ -44,11 +52,11 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public List<String> getAllCategories() {
-        return null;
+        return productRepository.findAllCategories();
     }
 
     @Override
     public List<String> getAllBrands() {
-        return null;
+        return productRepository.findAllBrands();
     }
 }
