@@ -1,5 +1,6 @@
 package by.wadikk.onlineshop.config;
 
+import by.wadikk.onlineshop.service.impl.UserSecurityService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Configuration;
@@ -22,8 +23,11 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     private AuthProvider authProvider;
 
 
-    @Resource(name = "MyUserDetailsServiceImpl")
-    private UserDetailsService userDetailsService;
+    /*@Resource(name = "MyUserDetailsServiceImpl")
+    private UserDetailsService userDetailsService;*/
+
+    @Autowired
+    private UserSecurityService userSecurityService;
 
     private static final String[] PUBLIC_MATCHERS = {
             "/css/**",
@@ -34,7 +38,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
             "/login",
             "/store",
             "/product-detail",
-            "/accessDenied"
+            "/accessDenied",
+            "/confirm-account",
+            "/confirm-email"
     };
 
 
@@ -49,19 +55,18 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
         http
                 .csrf().disable().cors().disable()
-                .formLogin().failureUrl("/login?error")
+                .formLogin().failureUrl("/login?error=true")
                 .loginPage("/login").permitAll()
                 .and()
                 .logout().logoutRequestMatcher(new AntPathRequestMatcher("/logout"))
                 .logoutSuccessUrl("/?logout").deleteCookies("remember-me").permitAll()
                 .and()
-                .rememberMe().key("aSecretKey").userDetailsService(userDetailsService);;
+                .rememberMe().key("aSecretKey").userDetailsService(userSecurityService);
 
     }
 
     @Override
-    protected void configure(AuthenticationManagerBuilder auth)
-    {
+    protected void configure(AuthenticationManagerBuilder auth) {
         auth.authenticationProvider(authProvider);
     }
 

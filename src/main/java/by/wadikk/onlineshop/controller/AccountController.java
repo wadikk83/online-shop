@@ -15,6 +15,7 @@ import by.wadikk.onlineshop.service.impl.UserSecurityService;
 import by.wadikk.onlineshop.utility.SecurityUtility;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.SimpleMailMessage;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -47,7 +48,7 @@ public class AccountController {
     @Autowired
     private EmailSenderService emailSenderService;
 
-    @PostMapping
+    /*@PostMapping("login")
     public String loginPost(ModelMap model) {
 
         Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
@@ -57,8 +58,24 @@ public class AccountController {
             return "redirect:/login";
         }
         return "redirect:/index";
-    }
+    }*/
 
+
+    /*@PostMapping("/login")
+    public String loginPage(@RequestParam(value = "error", required = false) String error,
+                            @RequestParam(value = "logout", required = false) String logout,
+                            Model model) {
+        String errorMessage = null;
+        if (error != null) {
+            errorMessage = "Username or Password is incorrect !!";
+        }
+
+        if (logout != null) {
+            errorMessage = "You have been successfully logged out !!";
+        }
+        model.addAttribute("errorMessage", errorMessage);
+        return "login";
+    }*/
 
     @GetMapping("/login")
     public String loginGet(Model model) {
@@ -106,7 +123,7 @@ public class AccountController {
             return "redirect:/login";
         }
         user = userService.createUser(user.getUsername(), user.getEmail(), password, Role.USER);
-        userSecurityService.authenticateUser(user.getUsername());
+        //userSecurityService.authenticateUser(user.getUsername());
 
         //Send e-mail
         //https://stackabuse.com/spring-security-email-verification-registration/
@@ -119,10 +136,13 @@ public class AccountController {
         mailMessage.setSubject("Complete Registration!");
         mailMessage.setFrom("by.wadikk.onlineshop@gmail.com");
         mailMessage.setText("To confirm your account, please click here : "
-                +"http://localhost:8080/confirm-account?token="+confirmationToken.getConfirmationToken());
+                + "http://localhost:8080/confirm-account?token=" + confirmationToken.getConfirmationToken());
         emailSenderService.sendEmail(mailMessage);
 
-        return "redirect:/my-profile";
+
+        new BadCredentialsException("Your entry requires activation");
+        //return "redirect:/my-profile";
+        return "redirect:/confirm-email";
     }
 
     @RequestMapping(value = "/update-user-info", method = RequestMethod.POST)
@@ -163,28 +183,29 @@ public class AccountController {
     }
 
     @GetMapping("/forgot-password")
-    public String forgotPassword(){
+    public String forgotPassword() {
         return "forgotPassword";
     }
 
-    @RequestMapping(value="/confirm-account")
-    public ModelAndView confirmUserAccount(ModelAndView modelAndView, @RequestParam("token")String confirmationToken)
-    {
+    @RequestMapping(value = "/confirm-account")
+    public ModelAndView confirmUserAccount(ModelAndView modelAndView, @RequestParam("token") String confirmationToken) {
         ConfirmationToken token = confirmationTokenRepository.findByConfirmationToken(confirmationToken);
 
-        if(token != null)
-        {
+        if (token != null) {
             User user = userService.findByEmailIgnoreCase(token.getUser().getEmail());
             user.setEnabled(true);
             userService.save(user);
             modelAndView.setViewName("accountVerified");
-        }
-        else
-        {
-            modelAndView.addObject("message","The link is invalid or broken!");
+        } else {
+            modelAndView.addObject("message", "The link is invalid or broken!");
             modelAndView.setViewName("error");
         }
 
         return modelAndView;
+    }
+
+    @RequestMapping("confirm-email")
+    public String confirmEmail(){
+        return "confirmEmail";
     }
 }

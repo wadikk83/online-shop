@@ -24,6 +24,7 @@ public class Runner implements InitializingBean {
 
     @Override
     public void afterPropertiesSet() throws Exception {
-        userService.createUser("admin", "by.wadikk.onlineshop@gmail.com", "admin", Role.ADMIN);
+        userService.createActiveUser("admin", "by.wadikk.onlineshop@gmail.com", "admin", Role.ADMIN);
+        //userService.createUser("admin", "by.wadikk.onlineshop@gmail.com", "admin", Role.ADMIN);
     }
 }

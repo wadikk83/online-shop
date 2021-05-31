@@ -3,12 +3,15 @@ package by.wadikk.onlineshop.service.impl;
 import by.wadikk.onlineshop.entity.User;
 import by.wadikk.onlineshop.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
-@Service("MyUserDetailsServiceImpl")
+//@Service("MyUserDetailsServiceImpl")
 public class UserDetailsServiceImpl implements UserDetailsService {
 
     @Autowired
@@ -17,7 +20,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         User userFindByUsername = userRepository.findByUsername(username);
-        User userFindByEmail = userRepository.findByEmail(username);
+        User userFindByEmail = userRepository.findByEmailIgnoreCase(username);
         //User userFindByGoogleUsername = userRepository.findByGoogleUsername(username);
         //User userFindByGoogleName = userRepository.findByGoogleName(username);
 
@@ -32,11 +35,11 @@ public class UserDetailsServiceImpl implements UserDetailsService {
             return userFindByUsername;
         }
 
-       /* if (userFindByName != null) {
-            return userFindByName;
+        if (userFindByEmail != null) {
+            return userFindByEmail;
         }
 
-        if (userFindByGoogleUsername != null) {
+        /*if (userFindByGoogleUsername != null) {
             return userFindByGoogleUsername;
         }
 
@@ -45,5 +48,12 @@ public class UserDetailsServiceImpl implements UserDetailsService {
         }*/
 
         return null;
+    }
+
+    public void authenticateUser(String username) {
+        UserDetails userDetails = loadUserByUsername(username);
+        Authentication authentication = new UsernamePasswordAuthenticationToken(userDetails, userDetails.getPassword(),
+                userDetails.getAuthorities());
+        SecurityContextHolder.getContext().setAuthentication(authentication);
     }
 }

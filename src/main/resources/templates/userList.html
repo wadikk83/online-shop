@@ -17,6 +17,7 @@
             <th>Last name</th>
             <th>E-mail</th>
             <th>Role</th>
+            <th>Active by Email</th>
             <th>Black list</th>
             <th>Operation</th>
         </tr>
@@ -28,6 +29,7 @@
             <td th:text="${user.lastName}"></td>
             <td th:text="${user.email}"></td>
             <td th:text="${user.role}"></td>
+            <td th:text="${user.isEnabled}"></td>
             <td th:text="${user.blackList}"></td>
 
 

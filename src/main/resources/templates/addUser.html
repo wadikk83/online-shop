@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml"
+      xmlns:sec="http://www.w3.org/1999/xhtml">
+
+<head th:replace="common/header :: common-header"/>
+<body>
+
+<div th:replace="adminHome :: navbarAdmin"></div>
+
+<div class="container page-content">
+    <form th:action="@{/user/add}" method="post" enctype="multipart/form-data"
+          th:object="${user}">
+        <fieldset>
+            <legend class="center-block">
+                New User Information
+            </legend>
+
+            <div class="form-group row">
+                <label for="username" class="col-2 col-form-label text-right">Username</label>
+                <div class="col-6">
+                    <input type="text" class="form-control" id="username" name="username">
+                </div>
+            </div>
+
+            <div class="form-group row">
+                <label for="password" class="col-2 col-form-label text-right">Password</label>
+                <div class="col-6">
+                    <input type="text" class="form-control" id="password" name="password">
+                </div>
+            </div>
+
+            <div class="form-group row">
+                <label for="firstName" class="col-2 col-form-label text-right">First Name</label>
+                <div class="col-6">
+                    <input type="text" class="form-control" id="firstName" name="firstName">
+                </div>
+            </div>
+
+            <div class="form-group row">
+                <label for="lastName" class="col-2 col-form-label text-right">Last Name</label>
+                <div class="col-6">
+                    <input type="text" class="form-control" id="lastName" name="lastName">
+                </div>
+            </div>
+
+            <div class="form-group row">
+                <label for="email" class="col-2 col-form-label text-right">Email</label>
+                <div class="col-6">
+                    <input type="text" class="form-control" id="email" name="email">
+                </div>
+            </div>
+
+            <div class="form-group row">
+                <label for="role" class="col-2 col-form-label text-right">Role</label>
+                <div class="col-6">
+                    <select class="form-control" id="role" th:name="role">
+                        <option th:each="role : ${roles}"
+                                th:value="${role}"
+                                th:text="${role}"></option>
+                    </select>
+                </div>
+            </div>
+
+
+            <div class="form-group row">
+                <label for="isEnabled" class="col-2 col-form-label text-right">Active by Email</label>
+                <div class="col-6">
+                    <select class="form-control" id="isEnabled" name="isEnabled" th:placeholder="isEnabled">
+                        <option th:value="false">false</option>
+                        <option th:value="true">true</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="form-group row">
+                <label for="isBlackList" class="col-2 col-form-label text-right">Add to BlackList</label>
+                <div class="col-6">
+                    <select class="form-control" id="isBlackList" name="isBlackList" th:placeholder="isBlackList">
+                        <option th:value="false">false</option>
+                        <option th:value="true">true</option>
+                    </select>
+                </div>
+            </div>
+
+
+            <div class="form-group row">
+                <div class="offset-2 col-6">
+                    <button type="submit" class="btn btn-success">Add User</button>
+                    <a class="btn btn-danger" th:href="@{/user/user-list}">Cancel</a>
+                </div>
+            </div>
+        </fieldset>
+    </form>
+</div>
+
+
+<div th:replace="common/header :: body-scripts"></div>
+<script src="/js/tagsinput-custom.js"></script>
+
+
+</body>
+</html>

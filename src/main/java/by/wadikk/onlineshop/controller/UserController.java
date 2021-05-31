@@ -1,7 +1,11 @@
 package by.wadikk.onlineshop.controller;
 
+import by.wadikk.onlineshop.entity.ConfirmationToken;
+import by.wadikk.onlineshop.entity.Role;
 import by.wadikk.onlineshop.entity.User;
+import by.wadikk.onlineshop.repository.ConfirmationTokenRepository;
 import by.wadikk.onlineshop.service.UserService;
+import by.wadikk.onlineshop.utility.SecurityUtility;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -16,44 +20,37 @@ public class UserController {
     @Autowired
     UserService userService;
 
-    /*@GetMapping("/add")
-    public String addProduct(Model model) {
-        Product product = new Product();
-        model.addAttribute("product", product);
-        model.addAttribute("allBrands", productService.getAllBrands());
-        model.addAttribute("allCategories", productService.getAllCategories());
-        return "addProduct";
-    }*/
+    @Autowired
+    ConfirmationTokenRepository confirmationTokenRepository;
 
-    /*@PostMapping("/add")
-    public String addAProductPost(@ModelAttribute("product") Product product, HttpServletRequest request) {
-        Product newProduct = new Product();
-        newProduct.setTitle(product.getTitle());
-        newProduct.setStock(product.getStock());
-        newProduct.setPrice(product.getPrice());
-        newProduct.setPicture(product.getPicture());
+    @GetMapping("/add")
+    public String addUser(Model model) {
+        User user = new User();
+        model.addAttribute("user", user);
+        model.addAttribute("roles", Role.values());
+        return "addUser";
+    }
 
-        List<String> listOfCategories = Arrays.asList(request.getParameter("category").split("\\s*,\\s*"));
-        if (!listOfCategories.isEmpty()) {
-            Set<Category> catElements = new HashSet<>();
-            for (String category : listOfCategories) {
-                catElements.add(new Category(category, newProduct));
-            }
-            newProduct.setCategories(catElements);
-        }*/
+    @PostMapping("/add")
+    public String addUserPost(@ModelAttribute("user") User user,
+                              @RequestParam boolean isEnabled,
+                              @RequestParam boolean isBlackList) {
+        User newUser = new User();
+        newUser.setUsername(user.getUsername());
 
-        /*List<String> listOfBrands = Arrays.asList(request.getParameter("brand").split("\\s*,\\s*"));
-        if (!listOfBrands.isEmpty()) {
-            Set<Brand> brandElements = new HashSet<>();
-            for (String brand : listOfBrands) {
-                brandElements.add(new Brand(brand, newProduct));
-            }
-            newProduct.setBrands(brandElements);
-        }
+        String password = user.getPassword();
+        newUser.setPassword(SecurityUtility.passwordEncoder().encode(password));
 
-        productService.saveProduct(newProduct);
-        return "redirect:product-list";
-    }*/
+        newUser.setFirstName(user.getFirstName());
+        newUser.setLastName(user.getLastName());
+        newUser.setEnabled(isEnabled);
+        newUser.setBlackList(isBlackList);
+        newUser.setEmail(user.getEmail());
+        newUser.setRole(user.getRole());
+
+        userService.save(newUser);
+        return "redirect:user-list";
+    }
 
     @GetMapping("/user-list")
     public String userList(Model model) {
@@ -62,60 +59,51 @@ public class UserController {
         return "userList";
     }
 
-    /*@GetMapping("/edit")
-    public String editProduct(@RequestParam("id") Long id, Model model) {
-        Product product = productService.findProductById(id);
+    @GetMapping("/edit")
+    public String editUser(@RequestParam("id") Long id, Model model) {
+        User user = userService.findById(id);
 
-        String preselectedBrands = "";
-        for (Brand brand : product.getBrands()) {
-            preselectedBrands += (brand.getName() + ",");
-        }
-        String preselectedCategories = "";
-        for (Category category : product.getCategories()) {
-            preselectedCategories += (category.getName() + ",");
-        }
-        model.addAttribute("product", product);
-        model.addAttribute("preselectedBrands", preselectedBrands);
-        model.addAttribute("preselectedCategories", preselectedCategories);
-        model.addAttribute("allBrands", productService.getAllBrands());
-        model.addAttribute("allCategories", productService.getAllCategories());
-        return "editProduct";
-    }*/
+        model.addAttribute("user", user);
+        model.addAttribute("roles", Role.values());
+        return "editUser";
+    }
 
-    /*@PostMapping("/edit")
-    public String editProductPost(@ModelAttribute("article") Product product, HttpServletRequest request) {
-        Product newProduct = new Product();
-        newProduct.setTitle(product.getTitle());
-        newProduct.setStock(product.getStock());
-        newProduct.setPrice(product.getPrice());
-        newProduct.setPicture(product.getPicture());
+    @PostMapping("/edit")
+    public String editUserPost(@ModelAttribute("user") User user,
+                               @RequestParam boolean isEnabled,
+                               @RequestParam boolean isBlackList) {
+        User newUser = new User();
+        newUser.setUsername(user.getUsername());
 
-        List<String> listOfCategories = Arrays.asList(request.getParameter("category").split("\\s*,\\s*"));
-        if (!listOfCategories.isEmpty()) {
-            Set<Category> catElements = new HashSet<>();
-            for (String category : listOfCategories) {
-                catElements.add(new Category(category, newProduct));
-            }
-            newProduct.setCategories(catElements);
-        }
+        String newPassword = user.getPassword();
+        String oldPassword = userService.findById(user.getId()).getPassword();
 
-        List<String> listOfBrands = Arrays.asList(request.getParameter("brand").split("\\s*,\\s*"));
-        if (!listOfBrands.isEmpty()) {
-            Set<Brand> brandElements = new HashSet<>();
-            for (String brand : listOfBrands) {
-                brandElements.add(new Brand(brand, newProduct));
-            }
-            newProduct.setBrands(brandElements);
-        }
+        if (!newPassword.equals(oldPassword)) {
+            newUser.setPassword(SecurityUtility.passwordEncoder().encode(newPassword));
+        } else newUser.setPassword(oldPassword);
 
-        newProduct.setId(product.getId());
-        productService.saveProduct(newProduct);
+        newUser.setFirstName(user.getFirstName());
+        newUser.setLastName(user.getLastName());
+        newUser.setEnabled(isEnabled);
+        newUser.setBlackList(isBlackList);
+        newUser.setEmail(user.getEmail());
+        newUser.setRole(user.getRole());
 
-        return "redirect:product-list";
-    }*/
+        newUser.setId(user.getId());
+
+        userService.save(newUser);
+
+        return "redirect:user-list";
+    }
 
     @GetMapping("/delete")
     public String deleteUserById(@RequestParam("id") Long id) {
+        User user = userService.findById(id);
+        ConfirmationToken confirmationToken = confirmationTokenRepository.findConfirmationTokenByUser(user);
+        if (confirmationToken != null) {
+            confirmationTokenRepository.delete(confirmationToken);
+        }
+
         userService.deleteUserById(id);
         return "redirect:user-list";
     }

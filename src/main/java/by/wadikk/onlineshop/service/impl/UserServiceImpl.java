@@ -59,6 +59,14 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public User createActiveUser(String username, String email, String password, Role role) {
+        User user = this.createUser(username, email, password, role);
+        user.setEnabled(true);
+        user.setBlackList(false);
+        return userRepository.save(user);
+    }
+
+    @Override
     public List<User> findAllUsers() {
         return (List<User>) userRepository.findAll();
     }

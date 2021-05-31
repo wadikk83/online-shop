@@ -29,9 +29,11 @@ public class AuthProvider implements AuthenticationProvider {
         User user = (User) userService.findByUsername(username);
 
         if (user != null && (user.getUsername().equals(username) || user.getUsername().equals(username))) {
-            if (user.getBlackList() == true) {
-
-                throw new BadCredentialsException("BlackList");
+            if (user.isEnabled() == false) {
+                throw  new BadCredentialsException("Account is not activated");
+            }
+            if (user.isBlackList() == true) {
+                throw  new BadCredentialsException("Account added to Blacklist");
             }
 
             Collection<? extends GrantedAuthority> authorities = user.getAuthorities();

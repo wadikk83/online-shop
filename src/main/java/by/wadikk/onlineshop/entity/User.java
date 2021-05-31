@@ -25,14 +25,18 @@ public class User implements UserDetails {
     private String password;
     private String firstName;
     private String lastName;
-    private boolean isEnabled=false;
-    private Boolean blackList = false;
+    private boolean isEnabled = false;
+    private boolean isBlackList = false;
     @NotNull
     @Email
     private String email;
 
     @Enumerated
     private Role role;
+
+    /*@OneToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @JoinColumn(name = "token_id")
+    private ConfirmationToken confirmationToken;*/
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
@@ -56,7 +60,7 @@ public class User implements UserDetails {
 
     @Override
     public boolean isEnabled() {
-        return true;
+        return isEnabled;
     }
 
 }

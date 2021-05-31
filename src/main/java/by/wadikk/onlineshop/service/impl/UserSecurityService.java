@@ -20,11 +20,24 @@ public class UserSecurityService implements UserDetailsService {
 	
 	@Override
 	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-		User user = userRepository.findByUsername(username);
+		/*User user = userRepository.findByUsername(username);
 		if (user == null) {
 			throw new UsernameNotFoundException("Username not found");
-		}	
-		return user;
+		}*/
+		User userFindByUsername = userRepository.findByUsername(username);
+
+		User userFindByEmail = userRepository.findByEmailIgnoreCase(username);
+
+		if (userFindByUsername != null) {
+			return userFindByUsername;
+		}
+
+		if (userFindByEmail != null) {
+			return userFindByEmail;
+		}
+
+
+		return null;
 	}
 	
 	public void authenticateUser(String username) {

@@ -18,9 +18,12 @@ public interface UserService {
 
     User createUser(String username, String email, String password, Role role);
 
+    User createActiveUser(String username, String email, String password, Role role);
+
     List<User> findAllUsers();
 
     void deleteUserById(Long id);
 
     User findByEmailIgnoreCase(String email);
+
 }
