@@ -1,0 +1,17 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<head th:replace="common/header :: common-header"/>
+
+
+<body class="d-flex flex-column">
+<div th:replace="common/header :: navbar"></div>
+
+
+<section class="jumbotron">
+    <div class="container text-center">
+        <h3 class="display-4">Congratulations! Your account has been activated and email is verified!</h3>
+        <a class="btn btn-primary my-2" th:href="@{/}">Home</a>
+    </div>
+</section>
+</body>
+</html>

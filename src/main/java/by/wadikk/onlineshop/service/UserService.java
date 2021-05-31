@@ -21,4 +21,6 @@ public interface UserService {
     List<User> findAllUsers();
 
     void deleteUserById(Long id);
+
+    User findByEmailIgnoreCase(String email);
 }

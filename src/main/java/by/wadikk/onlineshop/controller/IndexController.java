@@ -14,18 +14,22 @@ import java.util.stream.Collectors;
 @Controller
 public class IndexController {
 
-	@GetMapping("/")
-	public String index(Model model) {
-		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+    @GetMapping("/")
+    public String index(Model model) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
-		Set<String> roles = authentication.getAuthorities().stream()
-				.map(r -> r.getAuthority()).collect(Collectors.toSet());
+        Set<String> roles = authentication.getAuthorities().stream()
+                .map(r -> r.getAuthority()).collect(Collectors.toSet());
 
-		System.out.println(roles);
+        System.out.println(roles);
 
 
-		return "index";
-	}
+        return "index";
+    }
 
+    @GetMapping("/accessDenied")
+    public String accessDenied() {
+        return "accessDenied";
+    }
 
 }

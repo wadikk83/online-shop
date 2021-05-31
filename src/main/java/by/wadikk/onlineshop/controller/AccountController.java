@@ -3,14 +3,18 @@ package by.wadikk.onlineshop.controller;
 import java.security.Principal;
 import java.util.List;
 
+import by.wadikk.onlineshop.entity.ConfirmationToken;
 import by.wadikk.onlineshop.entity.Order;
 import by.wadikk.onlineshop.entity.Role;
 import by.wadikk.onlineshop.entity.User;
+import by.wadikk.onlineshop.repository.ConfirmationTokenRepository;
+import by.wadikk.onlineshop.service.EmailSenderService;
 import by.wadikk.onlineshop.service.OrderService;
 import by.wadikk.onlineshop.service.UserService;
 import by.wadikk.onlineshop.service.impl.UserSecurityService;
 import by.wadikk.onlineshop.utility.SecurityUtility;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.mail.SimpleMailMessage;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -19,6 +23,7 @@ import org.springframework.ui.Model;
 import org.springframework.ui.ModelMap;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.validation.Valid;
@@ -35,6 +40,12 @@ public class AccountController {
 
     @Autowired
     private UserSecurityService userSecurityService;
+
+    @Autowired
+    ConfirmationTokenRepository confirmationTokenRepository;
+
+    @Autowired
+    private EmailSenderService emailSenderService;
 
     @PostMapping
     public String loginPost(ModelMap model) {
@@ -96,6 +107,21 @@ public class AccountController {
         }
         user = userService.createUser(user.getUsername(), user.getEmail(), password, Role.USER);
         userSecurityService.authenticateUser(user.getUsername());
+
+        //Send e-mail
+        //https://stackabuse.com/spring-security-email-verification-registration/
+        ConfirmationToken confirmationToken = new ConfirmationToken(user);
+
+        confirmationTokenRepository.save(confirmationToken);
+
+        SimpleMailMessage mailMessage = new SimpleMailMessage();
+        mailMessage.setTo(user.getEmail());
+        mailMessage.setSubject("Complete Registration!");
+        mailMessage.setFrom("by.wadikk.onlineshop@gmail.com");
+        mailMessage.setText("To confirm your account, please click here : "
+                +"http://localhost:8080/confirm-account?token="+confirmationToken.getConfirmationToken());
+        emailSenderService.sendEmail(mailMessage);
+
         return "redirect:/my-profile";
     }
 
@@ -134,5 +160,31 @@ public class AccountController {
         model.addAttribute("user", currentUser);
         userSecurityService.authenticateUser(currentUser.getUsername());
         return "myProfile";
+    }
+
+    @GetMapping("/forgot-password")
+    public String forgotPassword(){
+        return "forgotPassword";
+    }
+
+    @RequestMapping(value="/confirm-account")
+    public ModelAndView confirmUserAccount(ModelAndView modelAndView, @RequestParam("token")String confirmationToken)
+    {
+        ConfirmationToken token = confirmationTokenRepository.findByConfirmationToken(confirmationToken);
+
+        if(token != null)
+        {
+            User user = userService.findByEmailIgnoreCase(token.getUser().getEmail());
+            user.setEnabled(true);
+            userService.save(user);
+            modelAndView.setViewName("accountVerified");
+        }
+        else
+        {
+            modelAndView.addObject("message","The link is invalid or broken!");
+            modelAndView.setViewName("error");
+        }
+
+        return modelAndView;
     }
 }
